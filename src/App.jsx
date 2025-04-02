@@ -266,7 +266,7 @@ const dishes = [
 
 const App = () => {
   // Read from localStorage and set the initial state for tables and orders
-  const storedTables = JSON.parse(localStorage.getItem("tables")) || Array.from({ length: 11 }, (_, i) => i + 1);
+  const storedTables = JSON.parse(localStorage.getItem("tables")) || Array.from({ length: 8 }, (_, i) => i + 1);
   const storedOrders = JSON.parse(localStorage.getItem("orders")) || {};
 
   const [tables, setTables] = useState(storedTables);

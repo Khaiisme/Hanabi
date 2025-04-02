@@ -276,7 +276,7 @@ const App = () => {
   const [abholungCount, setAbholungCount] = useState(0);
 
   // WebSocket connection
-  const socket = new WebSocket("ws://localhost:8080");
+  const socket = new WebSocket("ws://hanabi-938s.onrender.com");
 
   useEffect(() => {
     // Listen for incoming messages from WebSocket server
@@ -287,6 +287,7 @@ const App = () => {
 
       // If the data type is 'updateOrders', sync orders for the table
       if (data.type === "updateOrders") {
+        console.log("Received updated orders:", data.orders);
         const updatedOrders = { ...storedOrders, ...data.orders };
         localStorage.setItem("orders", JSON.stringify(updatedOrders));
         setOrderItems(updatedOrders[currentTable] || []); // Update UI for the current table

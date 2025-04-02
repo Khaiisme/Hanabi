@@ -276,7 +276,7 @@ const App = () => {
   const [abholungCount, setAbholungCount] = useState(0);
 
   // WebSocket connection
-  const socket = new WebSocket("ws://hanabi-938s.onrender.com");
+  const socket = new WebSocket("wss://hanabi-938s.onrender.com");
 
   useEffect(() => {
     // Listen for incoming messages from WebSocket server

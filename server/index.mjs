@@ -1,9 +1,16 @@
-import WebSocket, { WebSocketServer } from "ws";
-import { createServer } from "http";
+// index.js or server.js
+import express from 'express';
+import http from 'http';
+import WebSocket from 'ws';
 
-// Create an HTTP server (Render requires this)
-const server = createServer();
-const wss = new WebSocketServer({ server });
+// Create an express app
+const app = express();
+
+// Create a server using the express app
+const server = http.createServer(app);
+
+// Set up the WebSocket server
+const wss = new WebSocket.Server({ server });
 
 let orders = {}; // Stores orders
 

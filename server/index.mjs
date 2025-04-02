@@ -10,7 +10,7 @@ const app = express();
 const server = http.createServer(app);
 
 // Set up the WebSocket server
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server });
 
 let orders = {}; // Stores orders
 

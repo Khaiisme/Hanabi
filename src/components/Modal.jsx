@@ -34,21 +34,21 @@ const Modal = ({
   };
 
   // Close the dropdown if clicking outside the search bar
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        searchWrapperRef.current &&
-        !searchWrapperRef.current.contains(event.target)
-      ) {
-        setShowDishes(false); // Hide the dropdown when clicking outside
-      }
-    };
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     if (
+  //       searchWrapperRef.current &&
+  //       !searchWrapperRef.current.contains(event.target)
+  //     ) {
+  //       setShowDishes(false); // Hide the dropdown when clicking outside
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
+  //   document.addEventListener("mousedown", handleOutsideClick);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleOutsideClick);
+  //   };
+  // }, []);
 
   // Handle double-click on an order item
   const [clickTimer, setClickTimer] = useState(null); // Timer to handle double click
@@ -131,18 +131,18 @@ const Modal = ({
           ref={modalRef}
           className="bg-white p-6 rounded-lg w-full h-full sm:max-w-md sm:max-h-screen overflow-y-auto"
         >
-        <img src="/hanabi.jpg" className="h-12 w-auto mt-8" />
+        <img src="/hanabi.jpg" className="h-12 w-auto mt-6" />
           {/* Close button (X) */}
           <button
             onClick={() => {
               onClose();
             }}
-            className="absolute mt-12 top-2 right-2 text-2xl font-bold text-white hover:text-gray-700"
+            className="absolute mt-10 top-2 right-2 text-2xl font-bold text-white hover:text-gray-700"
           >
             X
           </button>
 
-          <h2 className="text-2xl font-bold mb-4 mt-10">Tisch {tableName}</h2>
+          <h2 className="text-2xl font-bold mb-4 mt-1">Tisch {tableName}</h2>
 
           {/* Search Bar */}
           <div className="mb-4 relative" ref={searchWrapperRef}>

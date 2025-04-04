@@ -18,9 +18,10 @@ const Modal = ({
   const [note, setNote] = useState(localStorage.getItem(tableName) || "");
   // Calculate the total
   const calculateTotal = () => {
-    return parseFloat(orderItems.reduce((total, item) => total + item.price, 0).toFixed(2));
-};
-
+    return parseFloat(
+      orderItems.reduce((total, item) => total + item.price, 0).toFixed(2)
+    );
+  };
 
   // Filter dishes based on the search query
   const filteredDishes = dishes.filter((dish) =>
@@ -91,11 +92,12 @@ const Modal = ({
     setOrderItems([]);
     setNote("");
 
-    // Remove "Abholung" table if it exists
     if (tableName.includes("Abholung")) {
-      setTables((prevTables) =>
-        prevTables.filter((table) => table !== tableName)
-      );
+      setTables((prevTables) => {
+        const updatedTables = prevTables.filter((table) => table !== tableName);
+        localStorage.setItem("tables", JSON.stringify(updatedTables));
+        return updatedTables;
+      });
     }
 
     // Close the modal
@@ -103,7 +105,6 @@ const Modal = ({
   };
 
   // Retrieve the stored note for this specific table from localStorage or use an empty string if no note is found
-  
 
   useEffect(() => {
     if (tableName) {
@@ -131,7 +132,7 @@ const Modal = ({
           ref={modalRef}
           className="bg-white p-6 rounded-lg w-full h-full sm:max-w-md sm:max-h-screen overflow-y-auto"
         >
-        <img src="/hanabi.jpg" className="h-12 w-auto mt-6" />
+          <img src="/hanabi.jpg" className="h-12 w-auto mt-6" />
           {/* Close button (X) */}
           <button
             onClick={() => {
@@ -208,7 +209,8 @@ const Modal = ({
 
           {/* Total */}
           <div className="mt-4 font-bold bg-blue-300 w-full rounded-lg p-4">
-            Insgesamt:<span className="text-2xl ml-20">{calculateTotal()}€</span>
+            Insgesamt:
+            <span className="text-2xl ml-20">{calculateTotal()}€</span>
           </div>
 
           {/* Pay Button */}

@@ -196,7 +196,12 @@ const dishes = [
   { name: "Gebacken Banane", price: 4.90 },
   { name: "Japan Eiscreme", price: 4.90 },
 
-
+  { name: "Chanh Đá", price: 4.90 },
+  { name: "LemonGras Ice Tea", price: 4.90 },
+  { name: "Peppermint Ice Tea", price: 4.90 },
+  { name: "Ginger Ice Tea", price: 4.90 },
+  { name: "Mango Strawberry Ice Tea", price: 4.90 },
+  { name: "Mango Maracuja Ice Tea", price: 4.90 },
 
 
   { name: "Grüner Tee", price: 3.50 },
@@ -363,7 +368,7 @@ const App = () => {
       </div>
       <button
         onClick={addTable}
-        className="mt-6 bg-blue-500 text-white py-2 px-4 rounded"
+        className="mt-6 bg-black text-white py-2 px-4 rounded"
       >
         Abholung
       </button>

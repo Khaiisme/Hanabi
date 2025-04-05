@@ -138,7 +138,7 @@ const Modal = ({
             onClick={() => {
               onClose();
             }}
-            className="absolute mt-10 top-2 right-2 text-2xl font-bold text-white hover:text-gray-700"
+            className="absolute mt-10 top-2 right-2 text-2xl font-bold text-white hover:text-gray-700 bg-black"
           >
             X
           </button>
@@ -214,7 +214,7 @@ const Modal = ({
           </div>
 
           {/* Pay Button */}
-          <div className="bg-gray-600 mt-6">
+          <div className="bg-black mt-6">
             <button
               onClick={handlePay}
               className=" text-white text-4xl py-2 px-4 rounded-xl w-full"

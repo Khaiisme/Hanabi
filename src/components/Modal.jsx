@@ -149,7 +149,7 @@ const Modal = ({
           <div className="mb-4 relative" ref={searchWrapperRef}>
             <input
               type="text"
-              placeholder="Tìm món ăn..."
+              placeholder="Suchen..."
               value={searchQuery}
               onChange={handleSearchChange}
               className="w-full p-2 border border-gray-300 rounded"
@@ -189,7 +189,7 @@ const Modal = ({
               onChange={(e) => setNote(e.target.value)} // Update the note as the user types
               rows="1" // Only 1 line
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 resize-none"
-              placeholder="Ghi chú..."
+              placeholder="Note ..."
             ></textarea>
           </div>
 

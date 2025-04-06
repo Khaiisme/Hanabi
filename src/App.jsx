@@ -368,7 +368,7 @@ const App = () => {
       </div>
       <button
         onClick={addTable}
-        className="mt-6 border-black text-black py-2 px-4 rounded"
+        className="mt-6 bg-black text-white py-2 px-4 rounded"
       >
         Abholung
       </button>

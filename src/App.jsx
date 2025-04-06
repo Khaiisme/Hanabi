@@ -376,9 +376,9 @@ const App = () => {
 
   return (
     <div className="w-full max-w-[412px] h-[915px] overflow-y-auto mx-auto bg-white text-black flex flex-col items-center p-10">
-      <img src="/hanabi.jpg" className="h-24 w-auto mb-2" />
+      <img src="/hanabi.jpg" className="h-24 w-auto mb-5" />
 
-      <div>
+      {/* <div>
         <button
           onClick={openModal}
           className="mt-0 mb-5 p-2 bg-zinc-900 text-white rounded"
@@ -386,7 +386,7 @@ const App = () => {
           Bestellverlauf
         </button>
         {isHistoryOpen && <OrderHistoryMobile closeModal={closeModal} />}
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full">
         {tables.map((table, index) => (

@@ -376,7 +376,7 @@ const App = () => {
 
   return (
     <div className="w-full max-w-[412px] h-[915px] overflow-y-auto mx-auto bg-white text-black flex flex-col items-center p-10">
-      <img src="/hanabi.jpg" className="h-24 w-auto mb-10" />
+      <img src="/hanabi.jpg" className="h-24 w-auto mb-2" />
 
       <div>
         <button

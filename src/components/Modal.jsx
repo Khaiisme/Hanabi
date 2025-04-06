@@ -72,36 +72,37 @@ const Modal = ({
       console.error("Table name is undefined!");
       return;
     }
-  
+
     // Get current time
     const timestamp = new Date().toISOString();
-  
+
     // Retrieve current data from localStorage
     const storedOrders = JSON.parse(localStorage.getItem("orders")) || {};
-    const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-    const storedHistory = JSON.parse(localStorage.getItem("orderHistory")) || {};
-  
-    const completedOrder = {
-      items: storedOrders[tableName] || [],
-      note: storedNotes[tableName] || "",
-      timestamp,
-    };
-  
-    // Save to history
-    storedHistory[tableName] = storedHistory[tableName] || [];
-    storedHistory[tableName].push(completedOrder);
-    localStorage.setItem("orderHistory", JSON.stringify(storedHistory));
-  
+    const allEntries = JSON.parse(localStorage.getItem("entries")) || [];
+    // Check if storedOrders for the given table is empty
+    if (Object.keys(storedOrders[tableName] || {}).length > 0) {
+      // If storedOrders is not empty, create a new entry and push to allEntries
+      const newEntry = {
+        tableName: tableName,
+        timestamp: timestamp,
+        storedOrders: storedOrders[tableName] || {}, // store orders for that table
+      };
+      allEntries.push(newEntry); // Add new entry to history
+
+      // Save back to localStorage
+      localStorage.setItem("entries", JSON.stringify(allEntries));
+    }
+
+    // Optional: Log it to check
+
     // Remove order + note from active lists
     delete storedOrders[tableName];
-    delete storedNotes[tableName];
     localStorage.setItem("orders", JSON.stringify(storedOrders));
-    localStorage.setItem("notes", JSON.stringify(storedNotes));
-  
+
     // Reset state
     setOrderItems([]);
     setNote("");
-  
+
     // Handle Abholung table removal
     if (tableName.includes("Abholung")) {
       setTables((prevTables) => {
@@ -110,11 +111,10 @@ const Modal = ({
         return updatedTables;
       });
     }
-  
+
     // Close modal
     onClose();
   };
-  
 
   // Retrieve the stored note for this specific table from localStorage or use an empty string if no note is found
 
@@ -150,7 +150,7 @@ const Modal = ({
             onClick={() => {
               onClose();
             }}
-            className="absolute mt-22 mr-5 top-2 right-2 text-xl font-bold text-white hover:text-gray-700 bg-black px-1.5 py-0.5 rounded-sm"
+            className="absolute mt-21 mr-5 top-2 right-2 text-3xl font-bold text-black hover:text-gray-700 bg-white px-1.5 py-0.5 rounded-sm"
           >
             X
           </button>
@@ -229,7 +229,7 @@ const Modal = ({
           <div className="bg-zinc-900 mt-6">
             <button
               onClick={handlePay}
-              className="bg-black text-white text-2xl py-2 px-4 rounded-xl w-full"
+              className="bg-black font-bold text-white text-2xl py-2 px-4 rounded-xl w-full"
             >
               Bezahlen
             </button>

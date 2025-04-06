@@ -35,21 +35,21 @@ const Modal = ({
   };
 
   // Close the dropdown if clicking outside the search bar
-  // useEffect(() => {
-  //   const handleOutsideClick = (event) => {
-  //     if (
-  //       searchWrapperRef.current &&
-  //       !searchWrapperRef.current.contains(event.target)
-  //     ) {
-  //       setShowDishes(false); // Hide the dropdown when clicking outside
-  //     }
-  //   };
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        searchWrapperRef.current &&
+        !searchWrapperRef.current.contains(event.target)
+      ) {
+        setShowDishes(false); // Hide the dropdown when clicking outside
+      }
+    };
 
-  //   document.addEventListener("mousedown", handleOutsideClick);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleOutsideClick);
-  //   };
-  // }, []);
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   // Handle double-click on an order item
   const [clickTimer, setClickTimer] = useState(null); // Timer to handle double click
@@ -66,32 +66,43 @@ const Modal = ({
       setClickTimer(newTimer);
     }
   };
-  let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0; // Load from storage or set to 0
   // Handle the "Pay" button click
   const handlePay = () => {
     if (!tableName) {
       console.error("Table name is undefined!");
       return;
     }
-    const totalBill = calculateTotal();
-    totalSales += totalBill; // Add current bill to total sales
-    totalSales = parseFloat(totalSales.toFixed(1)); // Ensure correct rounding
-
-    localStorage.setItem("totalSales", totalSales); // Store in localStorage
-
-    // Retrieve current orders from localStorage
+  
+    // Get current time
+    const timestamp = new Date().toISOString();
+  
+    // Retrieve current data from localStorage
     const storedOrders = JSON.parse(localStorage.getItem("orders")) || {};
     const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-    // Remove the specific table's order
+    const storedHistory = JSON.parse(localStorage.getItem("orderHistory")) || {};
+  
+    const completedOrder = {
+      items: storedOrders[tableName] || [],
+      note: storedNotes[tableName] || "",
+      timestamp,
+    };
+  
+    // Save to history
+    storedHistory[tableName] = storedHistory[tableName] || [];
+    storedHistory[tableName].push(completedOrder);
+    localStorage.setItem("orderHistory", JSON.stringify(storedHistory));
+  
+    // Remove order + note from active lists
     delete storedOrders[tableName];
     delete storedNotes[tableName];
-    // Save updated orders back to localStorage
     localStorage.setItem("orders", JSON.stringify(storedOrders));
     localStorage.setItem("notes", JSON.stringify(storedNotes));
-    // Clear order items in state
+  
+    // Reset state
     setOrderItems([]);
     setNote("");
-
+  
+    // Handle Abholung table removal
     if (tableName.includes("Abholung")) {
       setTables((prevTables) => {
         const updatedTables = prevTables.filter((table) => table !== tableName);
@@ -99,10 +110,11 @@ const Modal = ({
         return updatedTables;
       });
     }
-
-    // Close the modal
+  
+    // Close modal
     onClose();
   };
+  
 
   // Retrieve the stored note for this specific table from localStorage or use an empty string if no note is found
 
@@ -132,13 +144,13 @@ const Modal = ({
           ref={modalRef}
           className="bg-white p-6 rounded-lg w-full h-full sm:max-w-md sm:max-h-screen overflow-y-auto"
         >
-          <img src="/hanabi.jpg" className="h-12 w-auto mt-6" />
+          <img src="/hanabi.jpg" className="h-12 w-auto mt-5" />
           {/* Close button (X) */}
           <button
             onClick={() => {
               onClose();
             }}
-            className="absolute mt-10 top-2 right-4 text-xl font-bold text-white hover:text-gray-700 bg-black px-1.5 py-0.5 rounded-sm"
+            className="absolute mt-22 mr-5 top-2 right-2 text-xl font-bold text-white hover:text-gray-700 bg-black px-1.5 py-0.5 rounded-sm"
           >
             X
           </button>

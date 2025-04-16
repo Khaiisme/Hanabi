@@ -189,7 +189,7 @@ const dishes = [
   { name: "B Kinder Menu", price: 8.5 },
   { name: "C Kinder Menu", price: 8.5 },
 
-  { name: "Mittag 1.Peking-Gulasch-Suppe", price: 3.5 },
+  { name: "Mittag-1.Peking-Gulasch-Suppe", price: 3.5 },
   { name: "Mittag 2.Frühlingrollen", price: 2.9 },
   { name: "Mittag 3a.mit gebratenem Hühnerfleisch", price: 7.5 },
   { name: "Mittag 3b.mit Rindfleisch", price: 8.9 },

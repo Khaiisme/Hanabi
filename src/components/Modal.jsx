@@ -23,10 +23,13 @@ const Modal = ({
     );
   };
 
-  // Filter dishes based on the search query
-  const filteredDishes = dishes.filter((dish) =>
-    dish.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const normalize = (str) =>
+    str.toLowerCase().replace(/\s+/g, "").replace(/[^a-z0-9]/gi, "");
+  
+  const filteredDishes = dishes.filter(dish =>
+    normalize(dish.name).includes(normalize(searchQuery))
   );
+  
 
   // Handle search input changes
   const handleSearchChange = (e) => {

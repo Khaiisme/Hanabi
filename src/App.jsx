@@ -293,143 +293,113 @@ const dishes = [
 ];
 
 const App = () => {
-  // Read from localStorage and set the initial state for tables and orders
-  const storedTables =
-    JSON.parse(localStorage.getItem("tables")) ||
-    Array.from({ length: 8 }, (_, i) => i + 1);
-  const storedOrders = JSON.parse(localStorage.getItem("orders")) || {};
-
+  // Initial tables from localStorage or default
+  const storedTables = JSON.parse(localStorage.getItem("tables")) || Array.from({ length: 8 }, (_, i) => i + 1);
   const [tables, setTables] = useState(storedTables);
-  const [orderItems, setOrderItems] = useState(storedOrders);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Orders state
+  const [orderItems, setOrderItems] = useState([]);
   const [currentTable, setCurrentTable] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [abholungCount, setAbholungCount] = useState(0);
 
-  // Function to open the modal
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const openModal = () => {
-    setIsHistoryOpen(true);
-  };
+  // WebSocket state
+  const [socket, setSocket] = useState(null);
 
-  // Function to close the modal
-  const closeModal = () => {
-    setIsHistoryOpen(false);
-  };
-  // WebSocket connection
-  const socket = new WebSocket("wss://hanabisushi.onrender.com");
-
+  // Initialize WebSocket only once
   useEffect(() => {
-    
-    // Listen for incoming messages from WebSocket server
-    socket.onopen = () => console.log("Connected to WebSocket server");
+    const ws = new WebSocket("wss://hanabisushi.onrender.com");
+    setSocket(ws);
 
-    socket.onmessage = (event) => {
+    ws.onopen = () => console.log("Connected to WebSocket server");
+
+    ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
-      // If the data type is 'updateOrders', sync orders for the table
       if (data.type === "updateOrders") {
-        console.log("Received updated orders:", data.orders);
-        const updatedOrders = { ...storedOrders, ...data.orders };
+        const currentOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+        const updatedOrders = { ...currentOrders, ...data.orders };
         localStorage.setItem("orders", JSON.stringify(updatedOrders));
-        setOrderItems(updatedOrders[currentTable] || []); // Update UI for the current table
+
+        if (currentTable) {
+          setOrderItems(updatedOrders[currentTable] || []);
+        }
       }
     };
 
-    return () => socket.close(); // Cleanup on unmount
-  }, [currentTable]); // Re-run when the table changes
+    ws.onclose = () => console.log("WebSocket closed");
+    ws.onerror = (err) => console.error("WebSocket error", err);
 
-  // Add an "Abholung" table with a dynamic name (e.g., Abholung 1, Abholung 2)
+    return () => ws.close();
+  }, [currentTable]);
+
+  // Add an "Abholung" table dynamically
   const addTable = () => {
     const newAbholungName = `Abholung ${abholungCount + 1}`;
     const updatedTables = [...tables, newAbholungName];
     setTables(updatedTables);
-    localStorage.setItem("tables", JSON.stringify(updatedTables)); // Save to localStorage
+    localStorage.setItem("tables", JSON.stringify(updatedTables));
     setAbholungCount(abholungCount + 1);
   };
 
-  // Handle clicking on a table to open the modal and reset order items
+  // Handle table click to open modal
   const handleTableClick = (tableName) => {
     setCurrentTable(tableName);
     setIsModalOpen(true);
-    setOrderItems(storedOrders[tableName] || []); // Load the saved order items for the selected table
+    const storedOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    setOrderItems(storedOrders[tableName] || []);
   };
 
-  // Add order item (dish) to the list
+  // Add order item
   const addOrderItem = (name, price) => {
+    if (!currentTable) return;
+
     const newOrderItem = { name, price };
     const updatedOrderItems = [...orderItems, newOrderItem];
     setOrderItems(updatedOrderItems);
 
-    // Save the updated order items to localStorage for the specific table
-    const updatedOrders = {
-      ...storedOrders,
-      [currentTable]: updatedOrderItems,
-    };
+    const currentOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    const updatedOrders = { ...currentOrders, [currentTable]: updatedOrderItems };
     localStorage.setItem("orders", JSON.stringify(updatedOrders));
 
-    // Send update to WebSocket server for the current table's orders
-    socket.send(
-      JSON.stringify({
-        type: "updateOrders",
-        orders: { [currentTable]: updatedOrderItems },
-      })
-    );
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "updateOrders", orders: { [currentTable]: updatedOrderItems } }));
+    }
   };
 
-  // Remove order item from the list
+  // Remove order item
   const removeOrderItem = (index) => {
+    if (!currentTable) return;
+
     const updatedOrderItems = orderItems.filter((_, i) => i !== index);
     setOrderItems(updatedOrderItems);
 
-    // Update the order in localStorage for the specific table
-    const updatedOrders = {
-      ...storedOrders,
-      [currentTable]: updatedOrderItems,
-    };
+    const currentOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    const updatedOrders = { ...currentOrders, [currentTable]: updatedOrderItems };
     localStorage.setItem("orders", JSON.stringify(updatedOrders));
 
-    // Send updated order list to WebSocket server
-    socket.send(
-      JSON.stringify({
-        type: "updateOrders",
-        orders: { [currentTable]: updatedOrderItems },
-      })
-    );
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "updateOrders", orders: { [currentTable]: updatedOrderItems } }));
+    }
   };
+
+  
 
   return (
     <div className="w-full max-w-[412px] h-[915px] overflow-y-auto mx-auto bg-white text-black flex flex-col items-center p-10">
       <img src="/hanabi.jpg" className="h-24 w-auto mb-5" />
 
-      {/* <div>
-        <button
-          onClick={openModal}
-          className="mt-0 mb-5 p-2 bg-zinc-900 text-white rounded"
-        >
-          Bestellverlauf
-        </button>
-        {isHistoryOpen && <OrderHistoryMobile closeModal={closeModal} />}
-      </div> */}
-
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full">
         {tables.map((table, index) => (
-          <div
-            key={index}
-            className="cursor-pointer"
-            onClick={() => handleTableClick(table)}
-          >
+          <div key={index} className="cursor-pointer" onClick={() => handleTableClick(table)}>
             <Table number={table} />
           </div>
         ))}
       </div>
-      <button
-        onClick={addTable}
-        className="mt-6 bg-black text-white py-2 px-4 rounded"
-      >
+
+      <button onClick={addTable} className="mt-6 bg-black text-white py-2 px-4 rounded">
         Abholung
       </button>
 
-      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

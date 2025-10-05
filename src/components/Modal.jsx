@@ -140,6 +140,28 @@ const Modal = ({
     }
   }, [note, tableName]);
 
+   const handlePrint = () => {
+    const receiptContent = `
+      <div style="font-family: monospace; font-size:30px; width: 780px;">
+        <div style="margin-top:10px;">Table: ${tableName}</div>
+        <div style="margin-top:10px;">
+          ${orderItems.map((item, i) => `${item.name}`).join("<br><br>")}
+        </div>
+        <div style="margin-top:10px;">----------------------</div>
+      </div>
+    `;
+
+    const printWindow = window.open("", "_blank", "width=320,height=600");
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(receiptContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
+
   return (
     isOpen && (
       <div className="text-xl fixed inset-0 bg-gray-400 bg-opacity-50 flex justify-center items-center z-50">
@@ -229,14 +251,10 @@ const Modal = ({
           </div>
 
           {/* Pay Button */}
-          <div className="bg-zinc-900 mt-6">
-            <button
-              onClick={handlePay}
-              className="bg-black font-bold text-white text-2xl py-2 px-4 rounded-xl w-full"
-            >
-              Bezahlen
-            </button>
-          </div>
+          
+            
+            <button onClick={handlePrint}>Print Order</button>
+          
         </div>
       </div>
     )

@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.14",
+    "docker": "^1.0.0",
     "express": "^5.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "redis": "^5.8.2",
     "tailwindcss": "^4.0.14",
     "ws": "^8.18.1"
   },
